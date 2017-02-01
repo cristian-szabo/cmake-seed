@@ -50,7 +50,7 @@ int Program::run()
     }
     else
     {
-        throw std::exception("Invalid operation!");
+        throw std::runtime_error("Invalid operation!");
     }
 
     std::cout << a << " " << sign << " " << b << " = " << result << std::endl;
