@@ -6,7 +6,7 @@ A seed project which defines the structure for a C/C++ application. Separates ex
 
 | Linux | Windows 
 | --- | ---
-| [![Build Status](https://travis-ci.org/cristian-szabo/cmake-seed.svg?branch=master)](https://travis-ci.org/cristian-szabo/cmake-seed) | TBA
+| [![Build Status](https://travis-ci.org/cristian-szabo/cmake-seed.svg?branch=master)](https://travis-ci.org/cristian-szabo/cmake-seed) | [![Build status](https://ci.appveyor.com/api/projects/status/sop318ja0g6qs6pn/branch/master?svg=true)](https://ci.appveyor.com/project/cristian-szabo/cmake-seed/branch/master)
 
 ## Requirements
 
