@@ -1,4 +1,4 @@
-version: 1.0.{build}
+ersion: 1.0.{build}
 pull_requests:
   do_not_increment_build_number: true
 max_jobs: 2
@@ -6,7 +6,7 @@ configuration: Debug
 platform: x86
 clone_depth: 1
 before_build:
-- ps: cmake.exe -G "Visual Studio 14 2015" -B./Build -H./ -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/Install
+- ps: cmake.exe -G "Visual Studio 14 2015" -B"./Build" -H"./" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/Install
 build:
   project: Build/Project.sln
   parallel: true
