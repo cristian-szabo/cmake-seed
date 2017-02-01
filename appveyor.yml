@@ -9,11 +9,11 @@ build:
   project: Build/Project.sln
   parallel: true
   verbosity: normal
+before_package:
+- ps: msbuild Build/Package.vcxproj
 artifacts:
 - path: Package/*.exe
   name: Project-Win32
-before_deploy:
-- ps: msbuild Build/Package.vcxproj
 deploy:
 - provider: GitHub
   release: Project
