@@ -1,7 +1,3 @@
-#include "ProjectLib.hpp"
-
-#include "docopt.h"
-
 #include "Program.hpp"
 
 Program::Program(std::vector<std::string> cli)

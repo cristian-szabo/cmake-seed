@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Lib.hpp"
+
+#include "docopt.h"
+
 class Program
 {
 public:

@@ -1,7 +1,3 @@
-#include "ProjectLib.hpp"
-
-#include "docopt.h"
-
 #include "Main.hpp"
 
 #include "Program.hpp"
