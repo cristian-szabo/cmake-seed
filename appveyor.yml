@@ -1,0 +1,25 @@
+version: 1.0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+max_jobs: 2
+configuration: Debug
+platform: x86
+clone_depth: 1
+before_build:
+- ps: cmake.exe -G "Visual Studio 14 2015" -B./Build -H./ -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/Install
+build:
+  project: Build/Project.sln
+  parallel: true
+  verbosity: normal
+artifacts:
+- path: Package/*.exe
+  name: Project-Win32
+before_deploy:
+- ps: msbuild Build/Package.vcxproj
+deploy:
+- provider: GitHub
+  tag: Project-v$(APPVEYOR_BUILD_VERSION )
+  release: Project
+  description: Short description.
+  auth_token:
+    secure: gomSq79o3pnZMbng5Z7SYa+C5rFDRCYkA3BC/0MTe/Tnup4QMNKFwTzmtN7pxY36
