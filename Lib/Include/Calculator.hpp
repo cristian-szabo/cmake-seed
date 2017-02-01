@@ -1,6 +1,6 @@
 #pragma once
 
-class PROJECTLIB_PUBLIC Calculator
+class LIB_PUBLIC Calculator
 {
 public:
 
