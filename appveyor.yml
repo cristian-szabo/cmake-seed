@@ -16,8 +16,9 @@ before_deploy:
 - ps: msbuild Build/Package.vcxproj
 deploy:
 - provider: GitHub
-  tag: Project-v$(APPVEYOR_BUILD_VERSION )
   release: Project
   description: Short description.
   auth_token:
     secure: gomSq79o3pnZMbng5Z7SYa+C5rFDRCYkA3BC/0MTe/Tnup4QMNKFwTzmtN7pxY36
+  on:
+    appveyor_repo_tag: true
