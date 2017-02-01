@@ -11,16 +11,17 @@ build:
   project: Build\INSTALL.vcxproj
   parallel: true
   verbosity: minimal
+before_package:
+- cmd: msbuild Build\Package.vcxproj
 test_script:
 - cmd: Build\Test\%CONFIGURATION%\Test.exe --reporter=spec
-before_deploy:
-- cmd: msbuild Build\Package.vcxproj
+artifacts:
+- path: Package\*.exe
 deploy:
 - provider: GitHub
   release: Project
   description: Short description.
   auth_token:
     secure: gomSq79o3pnZMbng5Z7SYa+C5rFDRCYkA3BC/0MTe/Tnup4QMNKFwTzmtN7pxY36
-  artifact: Package\*.exe
   on:
     appveyor_repo_tag: true
