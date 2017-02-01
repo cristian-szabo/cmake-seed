@@ -4,9 +4,9 @@ A seed project which defines the structure for a C/C++ application. Separates ex
 
 ## Build Status
 
-| Ubuntu 12.04 | Windows 
+| Linux | Windows 
 | --- | ---
-| TBA | TBA
+| [![Build Status](https://travis-ci.org/cristian-szabo/cmake-seed.svg?branch=master)](https://travis-ci.org/cristian-szabo/cmake-seed) | TBA
 
 ## Requirements
 
