@@ -26,7 +26,7 @@ source_group ("Source\\" FILES ${SOURCE_FILES})
 
 add_library (${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+set_property (TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 target_include_directories (${PROJECT_NAME} PUBLIC  
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include> 

@@ -45,8 +45,6 @@ ExternalProject_Add (
     
     CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>")
 
-set_property(TARGET Docopt PROPERTY CXX_STANDARD 11)
-
 ExternalProject_Get_Property (Docopt SOURCE_DIR)
 ExternalProject_Get_Property (Docopt BINARY_DIR)
 ExternalProject_Get_Property (Docopt INSTALL_DIR)
@@ -54,6 +52,8 @@ ExternalProject_Get_Property (Docopt INSTALL_DIR)
 file(MAKE_DIRECTORY "${INSTALL_DIR}/include/docopt")
 
 add_library (docopt SHARED IMPORTED)
+
+set_property (TARGET docopt PROPERTY CXX_STANDARD 11)
 
 set_target_properties (docopt PROPERTIES
 	IMPORTED_LOCATION "${INSTALL_DIR}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}docopt${CMAKE_SHARED_LIBRARY_SUFFIX}"
