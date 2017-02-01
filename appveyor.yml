@@ -12,7 +12,7 @@ build:
   parallel: true
   verbosity: minimal
 test_script:
-- cmd: Build\Test\%CONFIGURATION%\Test.exe
+- cmd: Build\Test\%CONFIGURATION%\Test.exe --reporter=spec
 before_deploy:
 - cmd: msbuild Build\Package.vcxproj
 deploy:
