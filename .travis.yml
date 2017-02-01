@@ -4,6 +4,11 @@ language: cpp
 compiler: g++-5
 
 addons:
+  artifacts:
+    paths:
+      - Package/*.tar.gz
+      - Package/*.sh
+      - Package/*.tar.Z
   apt:
     sources:
       - ubuntu-toolchain-r-test
@@ -50,10 +55,6 @@ deploy:
   provider: releases
   api_key:
     secure: ${GITHUB_TOKEN}
-  file: 
-    - Package/*.tar.gz
-    - Package/*.sh
-    - Package/*.tar.Z
   skip_cleanup: true
   on:
     tags: true
