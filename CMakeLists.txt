@@ -43,8 +43,7 @@ ExternalProject_Add (
     GIT_REPOSITORY "https://github.com/docopt/docopt.cpp.git"
     GIT_TAG "master"
     
-    CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>"
-)
+    CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>")
 
 set_property(TARGET Docopt PROPERTY CXX_STANDARD 11)
 
@@ -67,12 +66,11 @@ ExternalProject_Add (
     GIT_REPOSITORY "https://github.com/banditcpp/bandit.git"
     GIT_TAG "master"
     
-    CMAKE_ARGS "-DBANDIT_BUILD_SPECS=0" "-DBANDIT_RUN_SPECS=0
+    CMAKE_ARGS "-DBANDIT_BUILD_SPECS=OFF" "-DBANDIT_RUN_SPECS=OFF"
     
-    INSTALL_COMMAND ""
-)
+    INSTALL_COMMAND "")
 
-set_property(TARGET Bandit PROPERTY CXX_STANDARD 11)
+set_property (TARGET Bandit PROPERTY CXX_STANDARD 11)
 
 ExternalProject_Get_Property (Bandit SOURCE_DIR)
 
