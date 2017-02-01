@@ -6,7 +6,7 @@ cmake_minimum_required (VERSION 3.2)
 #
 ###############################################################################
 
-project (ProjectMaster VERSION 1.0.0)
+project (Project VERSION 1.0.0)
 
 if (${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 	message(FATAL_ERROR "In-tree builds are not supported; please run cmake in a separate build directory.")
@@ -107,7 +107,14 @@ write_basic_package_version_file (
 
 install (FILES "${CMAKE_BINARY_DIR}/${CONFIG_FILE}" 
 	"${CMAKE_BINARY_DIR}/${VERSION_FILE}"
-    DESTINATION ${CONFIG_INSTALL_DIR})
+    "${CMAKE_BINARY_DIR}/CMakeFiles/Export/CMake/${TARGET_FILE}"
+    "${CMAKE_BINARY_DIR}/CMakeFiles/Export/CMake/${CMAKE_PROJECT_NAME}-Targets-$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.cmake"
+    DESTINATION ${CONFIG_INSTALL_DIR}
+    COMPONENT Libraries)
+    
+install (FILES "$<TARGET_FILE_DIR:docopt>/$<TARGET_FILE_NAME:docopt>"
+    DESTINATION ${BINARY_INSTALL_DIR}
+    COMPONENT Applications)
 
 install (EXPORT ${TARGET_NAME}
 	FILE ${TARGET_FILE}
@@ -121,8 +128,8 @@ install (EXPORT ${TARGET_NAME}
 ###############################################################################
     
 set (CPACK_PACKAGE_NAME ${CMAKE_PROJECT_NAME})
-set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Honours Project for Computing School at UWS")
-set (CPACK_PACKAGE_VENDOR "B00233705")
+set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "Project Description")
+set (CPACK_PACKAGE_VENDOR "Author Name")
 set (CPACK_PACKAGE_CONTACT ${CPACK_PACKAGE_VENDOR})
 set (CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.md")
 set (CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
@@ -144,6 +151,6 @@ set (CPACK_COMPONENT_HEADERS_INSTALL_TYPES Developer Full)
 set (CPACK_COMPONENT_APPLICATIONS_INSTALL_TYPES Application Full)
  
 set (CPACK_PACKAGE_DIRECTORY "${PROJECT_SOURCE_DIR}/Package")
-set (CPACK_STRIP_FILES TRUE)
+set (CPACK_STRIP_FILES FALSE)
 
 include (CPack)
