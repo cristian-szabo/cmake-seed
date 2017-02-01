@@ -65,7 +65,7 @@ ExternalProject_Add (
     GIT_REPOSITORY "https://github.com/banditcpp/bandit.git"
     GIT_TAG "master"
     
-    CMAKE_ARGS "-DBANDIT_BUILD_SPECS=OFF -DBANDIT_RUN_SPECS=OFF"
+    CMAKE_ARGS "-DBANDIT_BUILD_SPECS=0" "-DBANDIT_RUN_SPECS=0"
     
     INSTALL_COMMAND ""
 )
