@@ -70,11 +70,11 @@ ExternalProject_Add (
     
     INSTALL_COMMAND "")
 
-set_property (TARGET Bandit PROPERTY CXX_STANDARD 11)
-
 ExternalProject_Get_Property (Bandit SOURCE_DIR)
 
 add_library (bandit SHARED IMPORTED)
+
+set_property (TARGET bandit PROPERTY CXX_STANDARD 11)
 
 set_target_properties (bandit PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${SOURCE_DIR}")
