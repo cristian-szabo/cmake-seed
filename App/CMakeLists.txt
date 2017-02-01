@@ -10,6 +10,8 @@ add_executable (${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
 add_dependencies (${PROJECT_NAME} Docopt)
 
+set_property (TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+
 target_include_directories (${PROJECT_NAME} PUBLIC  
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>)
 
