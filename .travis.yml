@@ -1,38 +1,15 @@
+os: linux
+sudo: false
+language: cpp
+compiler: g++-5
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-5
 env:
-  global:
-    - BUILD_CONFIGURATION=Release
-    - CMAKE_URL="https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz"
-    - CMAKE_OPTIONS="-G "Unix Makefiles" -B./Build -H./ -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/Install"
-    - CXX_FLAGS=""
-
-matrix:
-  include:
-    - os: linux
-      sudo: false
-      language: cpp
-      compiler: g++-5
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-      env:
-        - ENV_CMAKE_OPTIONS=""
-        - ENV_CXX_FLAGS=""
-    - os: linux
-      sudo: false
-      language: cpp
-      compiler: g++-5
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-      env:
-        - ENV_CMAKE_OPTIONS=""
-        - ENV_CXX_FLAGS=""
+  - CMAKE_URL="https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz"
 
 install:
   - |
@@ -50,7 +27,7 @@ install:
     export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
 
 before_script:
-  - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS}
+  - cmake -G "Unix Makefiles" -B./Build -H./ -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/Install -DCMAKE_CXX_FLAGS=${CXX_FLAGS}
     
 script:    
   - |
