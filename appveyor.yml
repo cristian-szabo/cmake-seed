@@ -10,7 +10,7 @@ build:
   parallel: true
   verbosity: minimal
 test_script:
-- ps: Build/Test/%CONFIGURATION%/Test.exe
+- ps: Build/Test/$Env:CONFIGURATION/Test.exe
 before_deploy:
 - ps: msbuild Build/Package.vcxproj
 deploy:
