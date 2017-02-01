@@ -6,15 +6,15 @@ configuration: Debug
 platform: x86
 clone_depth: 1
 before_build:
-- ps: cmake.exe -G "Visual Studio 14 2015" -B"./Build" -H"./" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%/Install
+- cmd: cmake.exe -G "Visual Studio 14 2015" -B.\Build -H.\ -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\Install
 build:
-  project: Build/INSTALL.vcxproj
+  project: Build\INSTALL.vcxproj
   parallel: true
   verbosity: minimal
 test_script:
-- ps: $env:APPVEYOR_BUILD_FOLDER/Build/Test/$env:CONFIGURATION/Test.exe
+- cmd: Build\Test\%CONFIGURATION%\Test.exe
 before_deploy:
-- ps: msbuild Build/Package.vcxproj
+- cmd: msbuild Build\Package.vcxproj
 deploy:
 - provider: GitHub
   release: Project
