@@ -21,6 +21,6 @@ deploy:
   description: Short description.
   auth_token:
     secure: gomSq79o3pnZMbng5Z7SYa+C5rFDRCYkA3BC/0MTe/Tnup4QMNKFwTzmtN7pxY36
-  artifact: Package/*.exe
+  artifact: Package\*.exe
   on:
     appveyor_repo_tag: true
