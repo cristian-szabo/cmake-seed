@@ -5,6 +5,7 @@ compiler: g++-5
 
 addons:
   artifacts:
+    debug: true
     paths:
       - Package/*.tar.gz
       - Package/*.sh
@@ -55,6 +56,11 @@ deploy:
   provider: releases
   api_key:
     secure: ${GITHUB_TOKEN}
+  files:
+    paths:
+      - Package/*.tar.gz
+      - Package/*.sh
+      - Package/*.tar.Z
   skip_cleanup: true
   on:
     tags: true
