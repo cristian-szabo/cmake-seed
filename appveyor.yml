@@ -19,8 +19,6 @@ artifacts:
 - path: Package\*.exe
 deploy:
 - provider: GitHub
-  release: Project
-  description: Short description.
   auth_token:
     secure: gomSq79o3pnZMbng5Z7SYa+C5rFDRCYkA3BC/0MTe/Tnup4QMNKFwTzmtN7pxY36
   on:
