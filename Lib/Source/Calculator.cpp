@@ -26,7 +26,7 @@ bool Calculator::create(int a, int b)
 {
     if (valid())
     {
-        throw std::exception("Calculator object is initialised!");
+        throw std::runtime_error("Calculator object is initialised!");
     }
 
     this->a = a;
@@ -47,7 +47,7 @@ void Calculator::destroy()
 {
     if (!valid())
     {
-        throw std::exception("Calculator object is not initialised!");
+        throw std::runtime_error("Calculator object is not initialised!");
     }
 
     a = b = 0;
