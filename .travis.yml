@@ -10,8 +10,9 @@ addons:
     packages:
       - g++-5
 env:
-  - CMAKE_URL="https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz"
-  - CONFIGURATION="Debug"
+  global:
+    - CMAKE_URL="https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz"
+    - CONFIGURATION="Debug"
 
 cache:
     ccache: true
