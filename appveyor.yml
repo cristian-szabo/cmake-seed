@@ -12,7 +12,7 @@ build:
   parallel: true
   verbosity: minimal
 test_script:
-- ps: Build/Test/$Env:CONFIGURATION/Test.exe
+- ps: $env:APPVEYOR_BUILD_FOLDER/Build/Test/$env:CONFIGURATION/Test.exe
 before_deploy:
 - ps: msbuild Build/Package.vcxproj
 deploy:
