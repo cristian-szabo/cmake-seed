@@ -5,6 +5,7 @@
 #include <bandit/bandit.h>
 
 using namespace bandit;
+using namespace snowhouse;
 
 go_bandit([]() {
     describe("Calculator Test", []() {
@@ -20,7 +21,7 @@ go_bandit([]() {
         it("should multiply two numbers", [&]() {
             bool result = calc.create(2, 3);
 
-            AssertThat(result, Equals(true));
+            AssertThat(result, IsTrue());
 
             AssertThat(calc.mul(), Equals(6));
         });
@@ -28,7 +29,7 @@ go_bandit([]() {
         it("should addition two numbers", [&]() {
             bool result = calc.create(2, 3);
 
-            AssertThat(result, Equals(true));
+            AssertThat(result, IsTrue());
 
             AssertThat(calc.sum(), Equals(5));
         });
@@ -36,7 +37,7 @@ go_bandit([]() {
         it("should substract two numbers", [&]() {
             bool result = calc.create(3, 2);
 
-            AssertThat(result, Equals(true));
+            AssertThat(result, IsTrue());
 
             AssertThat(calc.diff(), Equals(1));
         });
@@ -44,7 +45,7 @@ go_bandit([]() {
         it("should divide two numbers", [&]() {
             bool result = calc.create(4, 2);
 
-            AssertThat(result, Equals(true));
+            AssertThat(result, IsTrue());
 
             AssertThat(calc.div(), Equals(2));
         });
