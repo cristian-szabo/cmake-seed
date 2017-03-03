@@ -71,7 +71,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: ${GITHUB_TOKEN}
+    secure: ${GITHUB_AUTH}
   file_glob: true
   file:
     - Package/*.tar.gz
