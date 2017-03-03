@@ -1,0 +1,29 @@
+version: '{build}'
+pull_requests:
+  do_not_increment_build_number: true
+max_jobs: 2
+configuration: Release
+platform:
+- x86
+- x64
+clone_depth: 1
+init:
+- ps: "$patch = $env:APPVEYOR_BUILD_VERSION\nif ($env:APPVEYOR_REPO_TAG -eq \"true\")\n{  \n  $version = $($env:APPVEYOR_REPO_TAG_NAME.TrimStart(\"v\")) \n}\nelse\n{\n  $version = \"1.0\"\n}\nUpdate-AppveyorBuild -Version \"$version.$patch\""
+before_build:
+- cmd: cmake.exe -G "Visual Studio 14 2015" -B.\Build -H.\ -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\Install -DCPACK_SYSTEM_NAME="Win-%PLATFORM%" -DCPACK_GENERATOR="NSIS" -DCPACK_PACKAGE_VERSION="%APPVEYOR_BUILD_VERSION%"
+build:
+  project: Build\INSTALL.vcxproj
+  parallel: true
+  verbosity: minimal
+before_package:
+- cmd: msbuild Build\Package.vcxproj
+test_script:
+- cmd: Build\Test\%CONFIGURATION%\Test.exe --reporter=spec
+artifacts:
+- path: Package\*.exe
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: gomSq79o3pnZMbng5Z7SYa+C5rFDRCYkA3BC/0MTe/Tnup4QMNKFwTzmtN7pxY36
+  on:
+    appveyor_repo_tag: true
