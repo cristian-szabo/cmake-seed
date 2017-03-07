@@ -13,15 +13,16 @@ configure_file (
 	${CMAKE_CURRENT_BINARY_DIR}/Include/Config.hpp @ONLY)
 
 set (HEADER_FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/Include/Config.hpp
+    ${CMAKE_CURRENT_BINARY_DIR}/Include/Export.hpp
 	${LOCAL_HEADER_FILES}
     ${EXTERN_HEADER_FILES})
-
-source_group ("Include\\" FILES ${HEADER_FILES})
 
 set (SOURCE_FILES
 	${LOCAL_SOURCE_FILES}
     ${EXTERN_SOURCE_FILES})
 
+source_group ("Include\\" FILES ${HEADER_FILES})
 source_group ("Source\\" FILES ${SOURCE_FILES})
 
 add_library(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
