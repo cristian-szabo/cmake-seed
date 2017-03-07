@@ -64,7 +64,6 @@ before_script:
 script:    
   - |
     cmake --build ./Build --target all
-    cmake --build ./Build --target install
     $TRAVIS_BUILD_DIR/Build/Test/Test --reporter=spec
 
 before_deploy:
