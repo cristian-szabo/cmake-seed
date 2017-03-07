@@ -1,4 +1,4 @@
-project (App VERSION 1.0.0)
+project (App)
 
 file (GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Include/*.hpp")
 file (GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Source/*.cpp")
@@ -7,10 +7,6 @@ source_group ("Include\\" FILES ${HEADER_FILES})
 source_group ("Source\\" FILES ${SOURCE_FILES})
 
 add_executable (${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
-
-add_dependencies (${PROJECT_NAME} Docopt)
-
-set_property (TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 target_include_directories (${PROJECT_NAME} PUBLIC  
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>)
@@ -22,7 +18,5 @@ add_custom_command (TARGET ${PROJECT_NAME}
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE_DIR:Lib>/$<TARGET_FILE_NAME:Lib>" "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
     COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE_DIR:docopt>/$<TARGET_FILE_NAME:docopt>" "$<TARGET_FILE_DIR:${PROJECT_NAME}>")
 
-install (TARGETS ${PROJECT_NAME}
-	EXPORT ${TARGET_NAME}
-	RUNTIME DESTINATION ${BINARY_INSTALL_DIR} 
-    COMPONENT Applications)
+install (TARGETS ${PROJECT_NAME} EXPORT ${EXPORT_NAME}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

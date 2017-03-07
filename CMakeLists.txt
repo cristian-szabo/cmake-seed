@@ -1,8 +1,12 @@
 cmake_minimum_required (VERSION 3.2)
 
+include (GNUInstallDirs)
+include (ExternalProject)
+include (CMakePackageConfigHelpers)
+
 ###############################################################################
 #
-#   MAIN
+#   CONFIG
 #
 ###############################################################################
 
@@ -12,82 +16,51 @@ if (${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 	message(FATAL_ERROR "In-tree builds are not supported; please run cmake in a separate build directory.")
 endif ()
 
-list (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules")
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
+
+option (BUILD_APP "Build app project." OFF)
+option (BUILD_TEST "Build test project." OFF)
+
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
+set (CMAKE_CXX_EXTENSIONS OFF)
+
+if (NOT CMAKE_CXX_STANDARD OR CMAKE_CXX_STANDARD LESS 11)
+	set (CMAKE_CXX_STANDARD 11)
+endif ()
 
 set (CMAKE_DEBUG_POSTFIX "_Debug")
 
-set (TARGET_NAME "${CMAKE_PROJECT_NAME}Targets")
+set (EXPORT_NAME "${CMAKE_PROJECT_NAME}-Targets")
 set (CONFIG_FILE "${CMAKE_PROJECT_NAME}-Config.cmake")
 set (VERSION_FILE "${CMAKE_PROJECT_NAME}-Config-Version.cmake")
-set (TARGET_FILE "${CMAKE_PROJECT_NAME}-Targets.cmake")
 
-set (INCLUDE_INSTALL_DIR "Include")
-set (LIBRARY_INSTALL_DIR "Library")
-set (BINARY_INSTALL_DIR "Binary")
-set (CONFIG_INSTALL_DIR "CMake")
+set (EXTERN_BASE_DIR "${CMAKE_BINARY_DIR}/ExternalProjects")
 
-###############################################################################
-#
-#   EXTERNAL PROJECTS
-#
-###############################################################################
+set (CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/${CMAKE_PROJECT_NAME}/cmake")
 
-include (ExternalProject)
+if (WIN32)
+    set (CONFIG_INSTALL_DIR "cmake")
+endif ()
 
-set_directory_properties (PROPERTIES EP_BASE "${CMAKE_BINARY_DIR}/Extern")
-
-ExternalProject_Add (
-    Docopt
-
-    GIT_REPOSITORY "https://github.com/docopt/docopt.cpp.git"
-    GIT_TAG "master"
-    
-    CMAKE_ARGS "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>")
-
-ExternalProject_Get_Property (Docopt SOURCE_DIR)
-ExternalProject_Get_Property (Docopt BINARY_DIR)
-ExternalProject_Get_Property (Docopt INSTALL_DIR)
-
-file(MAKE_DIRECTORY "${INSTALL_DIR}/include/docopt")
-
-add_library (docopt SHARED IMPORTED)
-
-set_property (TARGET docopt PROPERTY CXX_STANDARD 11)
-
-set_target_properties (docopt PROPERTIES
-	IMPORTED_LOCATION "${INSTALL_DIR}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}docopt${CMAKE_SHARED_LIBRARY_SUFFIX}"
-    IMPORTED_IMPLIB "${INSTALL_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}docopt${CMAKE_STATIC_LIBRARY_SUFFIX}"
-    INTERFACE_INCLUDE_DIRECTORIES "${INSTALL_DIR}/include/docopt")
-
-ExternalProject_Add (
-    Bandit
-
-    GIT_REPOSITORY "https://github.com/banditcpp/bandit.git"
-    GIT_TAG "master"
-    
-    CMAKE_ARGS "-DBANDIT_BUILD_SPECS=OFF" "-DBANDIT_RUN_SPECS=OFF"
-    
-    INSTALL_COMMAND "")
-
-ExternalProject_Get_Property (Bandit SOURCE_DIR)
-
-add_library (bandit SHARED IMPORTED)
-
-set_property (TARGET bandit PROPERTY CXX_STANDARD 11)
-
-set_target_properties (bandit PROPERTIES
-    INTERFACE_INCLUDE_DIRECTORIES "${SOURCE_DIR}")
+set_directory_properties (PROPERTIES EP_BASE ${EXTERN_BASE_DIR})
 
 ###############################################################################
 #
-#   INTERNAL PROJECTS
+#   PROJECTS
 #
 ###############################################################################
 
-add_subdirectory ("${CMAKE_SOURCE_DIR}/App")
+if (BUILD_APP)
+    include (ExternalProjects/Docopt)
+    add_subdirectory ("${CMAKE_SOURCE_DIR}/App")
+endif ()
+
 add_subdirectory ("${CMAKE_SOURCE_DIR}/Lib")
-add_subdirectory ("${CMAKE_SOURCE_DIR}/Test")
+
+if (BUILD_TEST)
+    include (ExternalProjects/Bandit)
+    add_subdirectory ("${CMAKE_SOURCE_DIR}/Test")
+endif ()
 
 ###############################################################################
 #
@@ -95,37 +68,25 @@ add_subdirectory ("${CMAKE_SOURCE_DIR}/Test")
 #
 ###############################################################################
 
-include (CMakePackageConfigHelpers)
-
 configure_package_config_file (
-	"${CMAKE_SOURCE_DIR}/ProjectConfig.cmake.inc" ${CONFIG_FILE}
-	INSTALL_DESTINATION ${CONFIG_INSTALL_DIR}
-	PATH_VARS INCLUDE_INSTALL_DIR LIBRARY_INSTALL_DIR BINARY_INSTALL_DIR)
+	"${CMAKE_SOURCE_DIR}/CMake/${CMAKE_PROJECT_NAME}-Config.cmake" "${CMAKE_BINARY_DIR}/${CONFIG_FILE}"
+	INSTALL_DESTINATION "${CONFIG_INSTALL_DIR}")
 
 write_basic_package_version_file (
-	${VERSION_FILE}
+	"${CMAKE_BINARY_DIR}/${VERSION_FILE}"
 	VERSION ${PROJECT_VERSION}
 	COMPATIBILITY SameMajorVersion)
 
-install (FILES "${CMAKE_BINARY_DIR}/${CONFIG_FILE}" 
-	"${CMAKE_BINARY_DIR}/${VERSION_FILE}"
-    "${CMAKE_BINARY_DIR}/CMakeFiles/Export/CMake/${TARGET_FILE}"
-    "${CMAKE_BINARY_DIR}/CMakeFiles/Export/CMake/${CMAKE_PROJECT_NAME}-Targets-$<$<CONFIG:Debug>:debug>$<$<CONFIG:Release>:release>.cmake"
-    DESTINATION ${CONFIG_INSTALL_DIR}
-    COMPONENT Libraries)
-    
-install (FILES "$<TARGET_FILE_DIR:docopt>/$<TARGET_FILE_NAME:docopt>"
-    DESTINATION ${BINARY_INSTALL_DIR}
-    COMPONENT Applications)
+install (FILES "${CMAKE_BINARY_DIR}/${CONFIG_FILE}" "${CMAKE_BINARY_DIR}/${VERSION_FILE}"
+    DESTINATION ${CONFIG_INSTALL_DIR})
 
-install (EXPORT ${TARGET_NAME}
-	FILE ${TARGET_FILE}
-	NAMESPACE "${CMAKE_PROJECT_NAME}::"
-	DESTINATION ${CONFIG_INSTALL_DIR})
+install (EXPORT ${EXPORT_NAME} 
+    DESTINATION ${CONFIG_INSTALL_DIR}
+    NAMESPACE "${CMAKE_PROJECT_NAME}::")
 
 ###############################################################################
 #
-#   CPACK
+#   PACKAGE
 #
 ###############################################################################
     
@@ -135,23 +96,6 @@ set (CPACK_PACKAGE_VENDOR "Author Name")
 set (CPACK_PACKAGE_CONTACT ${CPACK_PACKAGE_VENDOR})
 set (CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README.md")
 set (CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
-
-set (CPACK_COMPONENT_HEADERS_DEPENDS Binaries Libraries)
-set (CPACK_COMPONENT_APPLICATIONS_DEPENDS Binaries)
-
-set (CPACK_COMPONENT_APPLICATIONS_GROUP Runtime)
-set (CPACK_COMPONENT_BINARIES_GROUP Development)
-set (CPACK_COMPONENT_LIBRARIES_GROUP Development)
-set (CPACK_COMPONENT_HEADERS_GROUP Development)
-
-set (CPACK_ALL_INSTALL_TYPES Full Applications Developer)
-set (CPACK_COMPONENTS_ALL Applications Binaries Libraries Headers)
-set (CPACK_COMPONENT_BINARIES_INSTALL_TYPES Applications Developer Full)
-set (CPACK_COMPONENT_LIBRARIES_INSTALL_TYPES Developer Full)
-set (CPACK_COMPONENT_HEADERS_INSTALL_TYPES Developer Full)
-set (CPACK_COMPONENT_APPLICATIONS_INSTALL_TYPES Applications Full)
- 
-set (CPACK_PACKAGE_DIRECTORY "${PROJECT_SOURCE_DIR}/Package")
 set (CPACK_STRIP_FILES TRUE)
 
 include (CPack)
