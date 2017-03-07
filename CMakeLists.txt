@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.2)
+cmake_minimum_required (VERSION 3.7)
 
 include (GNUInstallDirs)
 include (ExternalProject)
@@ -33,16 +33,9 @@ set (CMAKE_DEBUG_POSTFIX "_Debug")
 set (EXPORT_NAME "${CMAKE_PROJECT_NAME}Targets")
 set (CONFIG_FILE "${CMAKE_PROJECT_NAME}Config.cmake")
 set (VERSION_FILE "${CMAKE_PROJECT_NAME}ConfigVersion.cmake")
-
-set (EXTERN_BASE_DIR "${CMAKE_BINARY_DIR}/ExternalProjects")
-
 set (CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/${CMAKE_PROJECT_NAME}/cmake")
 
-if (WIN32)
-    set (CONFIG_INSTALL_DIR "cmake")
-endif ()
-
-set_directory_properties (PROPERTIES EP_BASE ${EXTERN_BASE_DIR})
+set_directory_properties (PROPERTIES EP_BASE "${CMAKE_BINARY_DIR}/ExternalProjects")
 
 ###############################################################################
 #
