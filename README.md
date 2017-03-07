@@ -70,6 +70,8 @@ cmake_minimum_required (VERSION 3.2)
 
 project (Demo VERSION 1.0.0)
 
+set (CMAKE_CXX_STANDARD 11)
+
 find_package (Project 1.0.0 REQUIRED COMPONENTS Lib CONFIG)
 
 file (GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Include/*.hpp")
@@ -81,7 +83,7 @@ source_group ("Source\\" FILES ${SOURCE_FILES})
 add_executable (${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
 target_include_directories (${PROJECT_NAME} PUBLIC  
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>)
 
 target_link_libraries (${PROJECT_NAME} PUBLIC Project::Lib)
 
