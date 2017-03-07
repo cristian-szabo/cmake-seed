@@ -2,25 +2,16 @@ project (Lib)
 
 include (GenerateExportHeader)
 
-file (GLOB LOCAL_HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Include/*.hpp")
-file (GLOB LOCAL_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Source/*.cpp")
-
-file (GLOB EXTERN_HEADER_FILES "${CMAKE_CURRENT_BINARY_DIR}/Include/*.hpp")
-file (GLOB EXTERN_SOURCE_FILES "${CMAKE_CURRENT_BINARY_DIR}/Source/*.cpp")
+file (GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Include/*.hpp")
+file (GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Source/*.cpp")
 
 configure_file (
 	"${CMAKE_SOURCE_DIR}/CMake/${PROJECT_NAME}Config.cmake" 
 	${CMAKE_CURRENT_BINARY_DIR}/Include/Config.hpp @ONLY)
 
-set (HEADER_FILES
+list (APPEND HEADER_FILES
     ${CMAKE_CURRENT_BINARY_DIR}/Include/Config.hpp
-    ${CMAKE_CURRENT_BINARY_DIR}/Include/Export.hpp
-	${LOCAL_HEADER_FILES}
-    ${EXTERN_HEADER_FILES})
-
-set (SOURCE_FILES
-	${LOCAL_SOURCE_FILES}
-    ${EXTERN_SOURCE_FILES})
+    ${CMAKE_CURRENT_BINARY_DIR}/Include/Export.hpp)
 
 source_group ("Include\\" FILES ${HEADER_FILES})
 source_group ("Source\\" FILES ${SOURCE_FILES})
