@@ -8,8 +8,6 @@ file (GLOB LOCAL_SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Source/*.cpp")
 file (GLOB EXTERN_HEADER_FILES "${CMAKE_CURRENT_BINARY_DIR}/Include/*.hpp")
 file (GLOB EXTERN_SOURCE_FILES "${CMAKE_CURRENT_BINARY_DIR}/Source/*.cpp")
 
-message (STATUS ${BUILD_SHARED_LIBS})
-
 configure_file (
 	"${CMAKE_SOURCE_DIR}/CMake/${PROJECT_NAME}Config.cmake" 
 	${CMAKE_CURRENT_BINARY_DIR}/Include/Config.hpp @ONLY)
