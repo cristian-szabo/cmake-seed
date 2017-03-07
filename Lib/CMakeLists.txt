@@ -9,7 +9,7 @@ file (GLOB EXTERN_HEADER_FILES "${CMAKE_CURRENT_BINARY_DIR}/Include/*.hpp")
 file (GLOB EXTERN_SOURCE_FILES "${CMAKE_CURRENT_BINARY_DIR}/Source/*.cpp")
 
 configure_file (
-	"${CMAKE_SOURCE_DIR}/CMake/${PROJECT_NAME}-Config.cmake" 
+	"${CMAKE_SOURCE_DIR}/CMake/${PROJECT_NAME}Config.cmake" 
 	${CMAKE_CURRENT_BINARY_DIR}/Include/Config.hpp @ONLY)
 
 set (HEADER_FILES

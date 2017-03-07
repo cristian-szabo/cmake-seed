@@ -30,9 +30,9 @@ endif ()
 
 set (CMAKE_DEBUG_POSTFIX "_Debug")
 
-set (EXPORT_NAME "${CMAKE_PROJECT_NAME}-Targets")
-set (CONFIG_FILE "${CMAKE_PROJECT_NAME}-Config.cmake")
-set (VERSION_FILE "${CMAKE_PROJECT_NAME}-Config-Version.cmake")
+set (EXPORT_NAME "${CMAKE_PROJECT_NAME}Targets")
+set (CONFIG_FILE "${CMAKE_PROJECT_NAME}Config.cmake")
+set (VERSION_FILE "${CMAKE_PROJECT_NAME}ConfigVersion.cmake")
 
 set (EXTERN_BASE_DIR "${CMAKE_BINARY_DIR}/ExternalProjects")
 
@@ -69,7 +69,7 @@ endif ()
 ###############################################################################
 
 configure_package_config_file (
-	"${CMAKE_SOURCE_DIR}/CMake/${CMAKE_PROJECT_NAME}-Config.cmake" "${CMAKE_BINARY_DIR}/${CONFIG_FILE}"
+	"${CMAKE_SOURCE_DIR}/CMake/${CMAKE_PROJECT_NAME}Config.cmake" "${CMAKE_BINARY_DIR}/${CONFIG_FILE}"
 	INSTALL_DESTINATION "${CONFIG_INSTALL_DIR}")
 
 write_basic_package_version_file (
