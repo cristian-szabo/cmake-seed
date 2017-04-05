@@ -11,10 +11,10 @@ init:
 - ps: "$patch = $env:APPVEYOR_BUILD_NUMBER\nif ($env:APPVEYOR_REPO_TAG -eq \"true\")\n{  \n  $version = $($env:APPVEYOR_REPO_TAG_NAME.TrimStart(\"v\")) \n}\nelse\n{\n  $version = \"1.0\"\n}\nUpdate-AppveyorBuild -Version \"$version.$patch\""
 install:
 - ps: >-
-    if (!(Test-Path %APPVEYOR_BUILD_FOLDER%\Build\Extern\Install\cached))
+    if (!(Test-Path $env:APPVEYOR_BUILD_FOLDER\Build\Extern\Install\cached))
     {
       cmake -G "Visual Studio 14 2015" -B".\Build\Extern" -H".\Extern"
-      cmake --build ".\Build\Extern" --target ALL_BUILD --config %CONFIGURATION%
+      cmake --build ".\Build\Extern" --target ALL_BUILD --config $env:CONFIGURATION
       echo $null > Build\Extern\Install\cached
     }
 cache: '%APPVEYOR_BUILD_FOLDER%\Build\Extern\Install'
