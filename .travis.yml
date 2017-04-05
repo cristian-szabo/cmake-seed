@@ -68,7 +68,7 @@ before_script:
 script:    
   - |
     cmake -G "Unix Makefiles" ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -B./Build -H./
-    cmake --build ./Build --target all --config ${CONFIGURATION}
+    cmake --build ./Build --target install --config ${CONFIGURATION}
     $TRAVIS_BUILD_DIR/Build/Test/Test --reporter=spec
 
 before_deploy:
