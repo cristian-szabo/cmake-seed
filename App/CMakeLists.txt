@@ -1,5 +1,7 @@
 project (App)
 
+find_package (docopt REQUIRED CONFIG PATHS ${EXTERN_PATH})
+
 file (GLOB HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Include/*.hpp")
 file (GLOB SOURCE_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Source/*.cpp")
 
