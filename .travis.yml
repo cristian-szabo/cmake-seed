@@ -37,7 +37,7 @@ cache:
   ccache: true
   directories:
     - ${TRAVIS_BUILD_DIR}/tmp/cmake
-    - ${TRAVIS_BUILD_DIR}/Build/Extern
+    - ${TRAVIS_BUILD_DIR}/Build/Extern/Install
 
 install:
   - |    
@@ -59,10 +59,10 @@ install:
 
 before_script:
   - |
-    if [ ! -f "${TRAVIS_BUILD_DIR}/Build/Extern/cached" ]; then
+    if [ ! -f "${TRAVIS_BUILD_DIR}/Build/Extern/Install/cached" ]; then
       cmake -G "Unix Makefiles" -B./Build/Extern -H./Extern
       cmake --build ./Build/Extern --target all --config ${CONFIGURATION}
-      touch ${TRAVIS_BUILD_DIR}/Build/Extern/cached
+      touch ${TRAVIS_BUILD_DIR}/Build/Extern/Install/cached
     fi
 
 script:    
