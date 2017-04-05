@@ -2,7 +2,7 @@ env:
   global:
     - CONFIGURATION=Release
     - CMAKE_URL="https://cmake.org/files/v3.7/cmake-3.7.2-Linux-x86_64.tar.gz"
-    - CMAKE_OPTIONS="-DBUILD_APP=ON -DBUILD_TEST=ON -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/Install -DCMAKE_BUILD_TYPE=${CONFIGURATION} -DCPACK_GENERATOR=DEB -DCPACK_PACKAGE_DIRECTORY=${TRAVIS_BUILD_DIR}/Package -DCPACK_PACKAGING_INSTALL_PREFIX=/usr/local"
+    - CMAKE_OPTIONS="-DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/Install -DCMAKE_BUILD_TYPE=${CONFIGURATION} -DCPACK_GENERATOR=DEB -DCPACK_PACKAGE_DIRECTORY=${TRAVIS_BUILD_DIR}/Package -DCPACK_PACKAGING_INSTALL_PREFIX=/usr/local"
     - CXX_FLAGS=""
 
 matrix:
@@ -15,7 +15,6 @@ matrix:
           sources:
               - ubuntu-toolchain-r-test
           packages:
-              - mesa-common-dev
               - g++-5
       env:
          - ENV_CMAKE_OPTIONS="-DCPACK_SYSTEM_NAME=Linux-x86"
@@ -28,7 +27,6 @@ matrix:
           sources:
               - ubuntu-toolchain-r-test
           packages:
-              - mesa-common-dev
               - g++-5
               - g++-5-multilib
       env:
@@ -39,6 +37,7 @@ cache:
   ccache: true
   directories:
     - ${TRAVIS_BUILD_DIR}/tmp/cmake
+    - ${TRAVIS_BUILD_DIR}/Build/Extern
 
 install:
   - |    
@@ -59,11 +58,17 @@ install:
     export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
 
 before_script:
-  - cmake -G "Unix Makefiles" ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -B./Build -H./
-    
+  - |
+    if [ ! -f "${TRAVIS_BUILD_DIR}/Build/Extern/cached" ]; then
+      cmake -G "Unix Makefiles" -B./Build/Extern -H./Extern
+      cmake --build ./Build/Extern --target all --config ${CONFIGURATION}
+      touch ${TRAVIS_BUILD_DIR}/Build/Extern/cached
+    fi
+
 script:    
   - |
-    cmake --build ./Build --target all
+    cmake -G "Unix Makefiles" ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -B./Build -H./
+    cmake --build ./Build --target all --config ${CONFIGURATION}
     $TRAVIS_BUILD_DIR/Build/Test/Test --reporter=spec
 
 before_deploy:
