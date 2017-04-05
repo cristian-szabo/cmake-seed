@@ -14,7 +14,7 @@ install:
     if (!(Test-Path %APPVEYOR_BUILD_FOLDER%\Build\Extern\Install\cached))
     {
       cmake.exe -G "Visual Studio 14 2015" -B.\Build\Extern -H.\Extern
-      cmake --build ./Build --target ALL_BUILD --config %CONFIGURATION%
+      cmake --build ./Build/Extern --target ALL_BUILD --config %CONFIGURATION%
       echo $null > %APPVEYOR_BUILD_FOLDER%\Build\Extern\Install\cached
     }
 cache: '%APPVEYOR_BUILD_FOLDER%\Build\Extern\Install'
