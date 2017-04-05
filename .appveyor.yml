@@ -15,7 +15,7 @@ install:
     {
       cmake -G "Visual Studio 14 2015" -B".\Build\Extern" -H".\Extern"
       cmake --build ".\Build\Extern" --target ALL_BUILD --config %CONFIGURATION%
-      echo $null > %APPVEYOR_BUILD_FOLDER%\Build\Extern\Install\cached
+      echo $null > Build\Extern\Install\cached
     }
 cache: '%APPVEYOR_BUILD_FOLDER%\Build\Extern\Install'
 before_build:
