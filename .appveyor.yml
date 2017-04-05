@@ -9,14 +9,24 @@ platform:
 clone_depth: 1
 init:
 - ps: "$patch = $env:APPVEYOR_BUILD_NUMBER\nif ($env:APPVEYOR_REPO_TAG -eq \"true\")\n{  \n  $version = $($env:APPVEYOR_REPO_TAG_NAME.TrimStart(\"v\")) \n}\nelse\n{\n  $version = \"1.0\"\n}\nUpdate-AppveyorBuild -Version \"$version.$patch\""
+install:
+- ps: >-
+    if (Test-Path %APPVEYOR_BUILD_FOLDER%\Build\Extern\Install\cached)
+
+    {
+      cmake.exe -G "Visual Studio 14 2015" -B.\Build\Extern -H.\Extern
+      cmake --build ./Build --target ALL_BUILD --config %CONFIGURATION%
+      echo $null > %APPVEYOR_BUILD_FOLDER%\Build\Extern\Install\cached
+    }
+cache: '%APPVEYOR_BUILD_FOLDER%\Build\Extern\Install'
 before_build:
-- cmd: cmake.exe -G "Visual Studio 14 2015" -B.\Build -H.\ -DBUILD_APP=ON -DBUILD_TEST=ON -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\Install -DCPACK_SYSTEM_NAME="Win-%PLATFORM%" -DCPACK_GENERATOR="NSIS" -DCPACK_PACKAGE_VERSION="%APPVEYOR_BUILD_VERSION%" -DCPACK_PACKAGE_DIRECTORY=%APPVEYOR_BUILD_FOLDER%\Package
+- cmd: cmake.exe -G "Visual Studio 14 2015" -B.\Build -H.\ -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\Install -DCPACK_SYSTEM_NAME="Win-%PLATFORM%" -DCPACK_GENERATOR="NSIS" -DCPACK_PACKAGE_VERSION="%APPVEYOR_BUILD_VERSION%" -DCPACK_PACKAGE_DIRECTORY=%APPVEYOR_BUILD_FOLDER%\Package
 build:
   project: Build\INSTALL.vcxproj
   parallel: true
   verbosity: minimal
 before_package:
-- cmd: msbuild Build\Package.vcxproj
+- cmd: cmake --build ./Build --target PACKAGE --config %CONFIGURATION%
 test_script:
 - cmd: Build\Test\%CONFIGURATION%\Test.exe --reporter=spec
 artifacts:
