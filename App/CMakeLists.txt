@@ -13,7 +13,7 @@ add_executable (${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 target_include_directories (${PROJECT_NAME} PUBLIC  
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>)
 
-target_link_libraries (${PROJECT_NAME} PUBLIC Lib docopt)
+target_link_libraries (${PROJECT_NAME} PUBLIC Lib docopt_s)
 
 install (TARGETS ${PROJECT_NAME} EXPORT ${EXPORT_NAME}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
