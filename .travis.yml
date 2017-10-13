@@ -10,6 +10,20 @@ stages:
   - test
   - deploy
 
+env:
+  global:
+    # include $HOME/.local/bin for `aws`
+    - PATH=$HOME/.local/bin:$PATH
+
+before_install:
+  # set up awscli packages
+  - pip install --user awscli
+  - mkdir -p ~/artifacts
+  - aws s3 sync s3://travis-build-stages-shared-storage-test/artifacts ~/artifacts
+
+after_success:
+  - aws s3 sync ~/artifacts s3://travis-build-stages-shared-storage-test/artifacts
+  
 jobs:
   include:
     # Define jobs for pre-build stage    
@@ -17,21 +31,16 @@ jobs:
       script: 
         - |
           echo "pre-build job1"
+          echo one | tee > ~/artifacts/one
     - stage: prebuild
       script: 
         - |
           echo "pre-build job2"
+          echo two | tee > ~/artifacts/two
     - stage: prebuild
       script: 
         - |
-          echo "pre-build job3" >> tmp.txt
-      deploy:
-        provider: pages
-        skip_cleanup: true
-        github_token: $GITHUB_TOKEN
-        local_dir: $TRAVIS_BUILD_ID
-        file:
-          - tmp.txt
+          echo "pre-build job3"         
               
     # Define jobs for build stage
     - stage: build
@@ -41,7 +50,8 @@ jobs:
     - stage: build
       script: 
         - |
-          echo "build job2"      
+          echo "build job2"
+          cat ~/artifacts/*          
           
     # Define jobs for post-build stage
     - stage: postbuild
