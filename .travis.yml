@@ -17,24 +17,48 @@ jobs:
       script: 
         - |
           echo "pre-build job1"
+    - stage: prebuild
+      script: 
+        - |
+          echo "pre-build job2"
+    - stage: prebuild
+      script: 
+        - |
+          echo "pre-build job3"
               
     # Define jobs for build stage
     - stage: build
       script: 
         - |
-          echo "build job"
+          echo "build job1"
+    - stage: build
+      script: 
+        - |
+          echo "build job2"      
           
     # Define jobs for post-build stage
     - stage: postbuild
       script: 
         - |
-          echo "post-build job"
+          echo "post-build job1"
+    - stage: postbuild
+      script: 
+        - |
+          echo "post-build job2"
+    - stage: postbuild
+      script: 
+        - |
+          echo "post-build job3"
 
     # Define jobs for test stage
     - stage: test
       script: 
         - |
-          echo "test job"
+          echo "test job1"
+    - stage: test
+      script: 
+        - |
+          echo "test job2"
           
     # Define jobs for deploy stage
     - stage: deploy
