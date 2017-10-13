@@ -17,10 +17,10 @@ env:
 before_install:
   - pip install --user awscli
   - mkdir -p ~/artifacts
-  - aws s3 sync s3://cmake-seed/artifacts ~/artifacts
+  - aws s3 sync s3://cmake-seed/$TRAVIS_BUILD_NUMBER ~/artifacts
 
 after_success:
-  - aws s3 sync ~/artifacts s3://cmake-seed/artifacts
+  - aws s3 sync ~/artifacts s3://cmake-seed/$TRAVIS_BUILD_NUMBER
   
 jobs:
   include:
