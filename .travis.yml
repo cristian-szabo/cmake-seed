@@ -12,17 +12,15 @@ stages:
 
 env:
   global:
-    # include $HOME/.local/bin for `aws`
     - PATH=$HOME/.local/bin:$PATH
 
 before_install:
-  # set up awscli packages
   - pip install --user awscli
   - mkdir -p ~/artifacts
-  - aws s3 sync s3://travis-build-stages-shared-storage-test/artifacts ~/artifacts
+  - aws s3 sync s3://cmake-seed/artifacts ~/artifacts
 
 after_success:
-  - aws s3 sync ~/artifacts s3://travis-build-stages-shared-storage-test/artifacts
+  - aws s3 sync ~/artifacts s3://cmake-seed/artifacts
   
 jobs:
   include:
