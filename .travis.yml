@@ -24,7 +24,15 @@ jobs:
     - stage: prebuild
       script: 
         - |
-          echo "pre-build job3"
+          echo "pre-build job3" >> tmp.txt
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GITHUB_TOKEN
+        target_branch: artifacts
+        local_dir: $TRAVIS_BUILD_ID
+        file:
+          - tmp.txt
               
     # Define jobs for build stage
     - stage: build
