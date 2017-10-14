@@ -49,7 +49,7 @@ jobs:
       install:
         - |
           if [ ! -d "$TRAVIS_BUILD_DIR/workspace/cmake" ]; then
-            mkdir $TRAVIS_BUILD_DIR/workspace/cmake
+            mkdir -p $TRAVIS_BUILD_DIR/workspace/cmake
             travis_retry wget --no-check-certificate --quiet -O - $CMAKE_URL | tar --strip-components=1 -xz -C $TRAVIS_BUILD_DIR/workspace/cmake
           fi
           export PATH=$TRAVIS_BUILD_DIR/workspace/cmake/bin:$PATH
