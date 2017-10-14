@@ -40,57 +40,13 @@ jobs:
               - clang-tidy-3.8
       script: 
         - |
-          echo "clang-tidy"
-          clang-tidy 
+          mkdir Build
+          cmake -G "Unix Makefiles" -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -B./Build -H./
+          cmake --build ./Build --config Release
+          export PROJECT_FILES=$(find ./Lib -name "*.{h,cpp}")
+          echo $PROJECT_FILES
+          clang-tidy -p ./Build -checks=* $PROJECT_FILES
     - stage: prebuild
       script: 
         - |
-          echo "dependencies"         
-              
-    # Define jobs for build stage
-    - stage: build
-      script: 
-        - |
-          echo "build x32"
-    - stage: build
-      script: 
-        - |
-          echo "build x64"
-    - stage: build
-      script: 
-        - |
-          echo "build coverage"          
-          
-    # Define jobs for post-build stage
-    - stage: postbuild
-      script: 
-        - |
-          echo "valgrind memcheck x32"
-    - stage: postbuild
-      script: 
-        - |
-          echo "valgrind memcheck x64"
-    - stage: postbuild
-      script: 
-        - |
-          echo "gcovr generate"
-
-    # Define jobs for test stage
-    - stage: test
-      script: 
-        - |
-          echo "report coverage"
-    - stage: test
-      script: 
-        - |
-          echo "unit test"
-    - stage: test
-      script: 
-        - |
-          echo "validation test"
-          
-    # Define jobs for deploy stage
-    - stage: deploy
-      script: 
-        - |
-          echo "github"
+          echo "dependencies"
