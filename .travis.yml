@@ -32,15 +32,16 @@ jobs:
               - cppcheck
       script: 
         - |
-          cppcheck --enable=information --template=gcc --enable=all -j4 --platform=unix --suppressions-list=cppcheck-suppressions.txt Lib/ App/ Test/
+          cppcheck --enable=information --template=gcc --enable=all -j4 --platform=linux --suppressions-list=cppcheck-suppressions.txt Lib/ App/ Test/
     - stage: prebuild
       addons:
         apt:
           packages:
-              - clang-tidy
+              - clang-tidy-3.8
       script: 
         - |
           echo "clang-tidy"
+          clang-tidy 
     - stage: prebuild
       script: 
         - |
