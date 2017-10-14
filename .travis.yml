@@ -10,6 +10,10 @@ stages:
   - test
   - deploy
 
+env:
+  global:
+    - CONFIGURATION=Release
+    - CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.4-Linux-x86_64.tar.gz"
 #env:
 #  global:
 #    - PATH=$HOME/.local/bin:$PATH
@@ -38,6 +42,17 @@ jobs:
         apt:
           packages:
               - clang-tidy-3.8
+      cache:
+        ccache: true
+        directories:
+          - $TRAVIS_BUILD_DIR/workspace/cmake
+      install:
+        - |
+          if [ ! -d "$TRAVIS_BUILD_DIR/workspace/cmake" ]; then
+            mkdir $TRAVIS_BUILD_DIR/workspace/cmake
+            travis_retry wget --no-check-certificate --quiet -O - $CMAKE_URL | tar --strip-components=1 -xz -C $TRAVIS_BUILD_DIR/workspace/cmake
+          fi
+          export PATH=$TRAVIS_BUILD_DIR/workspace/cmake/bin:$PATH
       script: 
         - |
           mkdir Build
