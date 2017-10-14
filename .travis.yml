@@ -26,57 +26,70 @@ jobs:
   include:
     # Define jobs for pre-build stage    
     - stage: prebuild
+      addons:
+        apt:
+          packages:
+              - cppcheck
       script: 
         - |
-          echo "pre-build job1"
-          echo one | tee > ~/artifacts/one
+          cppcheck --enable=information --template=gcc --enable=all -j4 --platform=unix --suppressions-list=cppcheck-suppressions.txt Lib/ App/ Test/
+    - stage: prebuild
+      addons:
+        apt:
+          packages:
+              - clang-tidy
+      script: 
+        - |
+          echo "clang-tidy"
     - stage: prebuild
       script: 
         - |
-          echo "pre-build job2"
-          echo two | tee > ~/artifacts/two
-    - stage: prebuild
-      script: 
-        - |
-          echo "pre-build job3"         
+          echo "dependencies"         
               
     # Define jobs for build stage
     - stage: build
       script: 
         - |
-          echo "build job1"
+          echo "build x32"
     - stage: build
       script: 
         - |
-          echo "build job2"
-          cat ~/artifacts/*          
+          echo "build x64"
+    - stage: build
+      script: 
+        - |
+          echo "build coverage"          
           
     # Define jobs for post-build stage
     - stage: postbuild
       script: 
         - |
-          echo "post-build job1"
+          echo "valgrind memcheck x32"
     - stage: postbuild
       script: 
         - |
-          echo "post-build job2"
+          echo "valgrind memcheck x64"
     - stage: postbuild
       script: 
         - |
-          echo "post-build job3"
+          echo "gcovr generate"
 
     # Define jobs for test stage
     - stage: test
       script: 
         - |
-          echo "test job1"
+          echo "report coverage"
     - stage: test
       script: 
         - |
-          echo "test job2"
+          echo "unit test"
+    - stage: test
+      script: 
+        - |
+          echo "validation test"
           
     # Define jobs for deploy stage
     - stage: deploy
       script: 
         - |
-          echo "deploy job"
+          echo "github"
