@@ -45,13 +45,13 @@ jobs:
       cache:
         ccache: true
         directories:
-          - $TRAVIS_BUILD_DIR/cache/cmake
+          - $TRAVIS_BUILD_DIR/Workspace/CMake
       install:
         - |
-          if [ ! -d "$TRAVIS_BUILD_DIR/cache/cmake/bin" ]; then
-            travis_retry wget --no-check-certificate --quiet -O - $CMAKE_URL | tar --strip-components=1 -xz -C $TRAVIS_BUILD_DIR/cache/cmake
+          if [ ! -d "$TRAVIS_BUILD_DIR/Workspace/CMake/bin" ]; then
+            travis_retry wget --no-check-certificate --quiet -O - $CMAKE_URL | tar --strip-components=1 -xz -C $TRAVIS_BUILD_DIR/Workspace/CMake
           fi
-          export PATH=$TRAVIS_BUILD_DIR/cache/cmake/bin:$PATH
+          export PATH=$TRAVIS_BUILD_DIR/Workspace/CMake/bin:$PATH
       script: 
         - |
           mkdir Build
@@ -61,19 +61,29 @@ jobs:
           echo $PROJECT_FILES
           clang-tidy -p ./Build -checks=hicpp-* $PROJECT_FILES
     - stage: prebuild
+      env:
+        global:
+          - PATH=$HOME/.local/bin:$PATH
       cache:
         ccache: true
         directories:
-          - $TRAVIS_BUILD_DIR/cache/cmake
-          - $TRAVIS_BUILD_DIR/cache/extern
+          - $TRAVIS_BUILD_DIR/Workspace/CMake
+          - $TRAVIS_BUILD_DIR/Build/Extern
+      before_install:
+        - |
+          pip install --user awscli
+          mkdir -p artifacts/extern
+          aws s3 sync s3://$TRAVIS_REPO_SLUG/$TRAVIS_BUILD_NUMBER/extern artifacts/extern
       install:
         - |
-          if [ ! -d "$TRAVIS_BUILD_DIR/cache/cmake/bin" ]; then
-            travis_retry wget --no-check-certificate --quiet -O - $CMAKE_URL | tar --strip-components=1 -xz -C $TRAVIS_BUILD_DIR/cache/cmake
+          if [ ! -d "$TRAVIS_BUILD_DIR/Workspace/CMake/bin" ]; then
+            travis_retry wget --no-check-certificate --quiet -O - $CMAKE_URL | tar --strip-components=1 -xz -C $TRAVIS_BUILD_DIR/Workspace/CMake
           fi
-          export PATH=$TRAVIS_BUILD_DIR/cache/cmake/bin:$PATH
+          export PATH=$TRAVIS_BUILD_DIR/Workspace/CMake/bin:$PATH
       script: 
         - |
           mkdir Build
-          cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/cache/extern -B./Build -H./Extern
-          cmake --build ./Build --target all --config $CONFIGURATION
+          cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/artifacts/extern -B./Build/Extern -H./Extern
+          cmake --build ./Build/Extern --target all --config $CONFIGURATION
+      after_success:
+         - aws s3 sync artifacts/extern s3://$TRAVIS_REPO_SLUG/$TRAVIS_BUILD_NUMBER/extern
