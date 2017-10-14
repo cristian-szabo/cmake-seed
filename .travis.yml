@@ -45,22 +45,35 @@ jobs:
       cache:
         ccache: true
         directories:
-          - $TRAVIS_BUILD_DIR/workspace/cmake
+          - $TRAVIS_BUILD_DIR/cache/cmake
       install:
         - |
-          if [ ! -d "$TRAVIS_BUILD_DIR/workspace/cmake/bin" ]; then
-            travis_retry wget --no-check-certificate --quiet -O - $CMAKE_URL | tar --strip-components=1 -xz -C $TRAVIS_BUILD_DIR/workspace/cmake
+          if [ ! -d "$TRAVIS_BUILD_DIR/cache/cmake/bin" ]; then
+            travis_retry wget --no-check-certificate --quiet -O - $CMAKE_URL | tar --strip-components=1 -xz -C $TRAVIS_BUILD_DIR/cache/cmake
           fi
-          export PATH=$TRAVIS_BUILD_DIR/workspace/cmake/bin:$PATH
+          export PATH=$TRAVIS_BUILD_DIR/cache/cmake/bin:$PATH
       script: 
         - |
           mkdir Build
           cmake -G "Unix Makefiles" -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DBUILD_APP=OFF -DBUILD_TEST=OFF -B./Build -H./
-          cmake --build ./Build --config Release
+          cmake --build ./Build --config $CONFIGURATION
           export PROJECT_FILES=$(find Lib -type f -name "*.cpp" -o -name "*.hpp" -o -name "*.c" -o -name "*.h")
           echo $PROJECT_FILES
           clang-tidy -p ./Build -checks=hicpp-* $PROJECT_FILES
     - stage: prebuild
+      cache:
+        ccache: true
+        directories:
+          - $TRAVIS_BUILD_DIR/cache/cmake
+          - $TRAVIS_BUILD_DIR/cache/extern
+      install:
+        - |
+          if [ ! -d "$TRAVIS_BUILD_DIR/cache/cmake/bin" ]; then
+            travis_retry wget --no-check-certificate --quiet -O - $CMAKE_URL | tar --strip-components=1 -xz -C $TRAVIS_BUILD_DIR/cache/cmake
+          fi
+          export PATH=$TRAVIS_BUILD_DIR/cache/cmake/bin:$PATH
       script: 
         - |
-          echo "dependencies"
+          mkdir Build
+          cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$TRAVIS_BUILD_DIR/cache/extern -B./Build -H./Extern
+          cmake --build ./Build --target all --config $CONFIGURATION
