@@ -73,7 +73,7 @@ jobs:
         - |
           pip install --user awscli
           mkdir -p artifacts/extern
-          aws s3 sync s3://$TRAVIS_REPO_SLUG/$TRAVIS_BUILD_NUMBER/extern artifacts/extern
+          aws s3 sync s3://$TRAVIS_REPO_SLUG/extern artifacts/extern
       install:
         - |
           if [ ! -d "$TRAVIS_BUILD_DIR/Workspace/CMake/bin" ]; then
@@ -87,5 +87,5 @@ jobs:
           cmake --build ./Build --target all --config $CONFIGURATION
       after_success:
         - |
-          mv -v Build/Install/ artifacts/extern/
-          aws s3 sync artifacts/extern s3://$TRAVIS_REPO_SLUG/$TRAVIS_BUILD_NUMBER/extern
+          mv -v Build/Install/* artifacts/extern/
+          aws s3 sync artifacts/extern s3://$TRAVIS_REPO_SLUG/extern
