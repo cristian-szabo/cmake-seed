@@ -10,17 +10,17 @@ stages:
   - test
   - deploy
 
-env:
-  global:
-    - PATH=$HOME/.local/bin:$PATH
+#env:
+#  global:
+#    - PATH=$HOME/.local/bin:$PATH
 
-before_install:
-  - pip install --user awscli
-  - mkdir -p ~/artifacts
-  - aws s3 sync s3://cmake-seed/$TRAVIS_BUILD_NUMBER ~/artifacts
-
-after_success:
-  - aws s3 sync ~/artifacts s3://cmake-seed/$TRAVIS_BUILD_NUMBER
+#before_install:
+#  - pip install --user awscli
+#  - mkdir -p ~/artifacts
+#  - aws s3 sync s3://cmake-seed/$TRAVIS_BUILD_NUMBER ~/artifacts
+#
+#after_success:
+#  - aws s3 sync ~/artifacts s3://cmake-seed/$TRAVIS_BUILD_NUMBER
   
 jobs:
   include:
@@ -32,7 +32,7 @@ jobs:
               - cppcheck
       script: 
         - |
-          cppcheck --enable=information --template=gcc --enable=all -j4 --platform=linux --suppressions-list=cppcheck-suppressions.txt Lib/ App/ Test/
+          cppcheck --enable=information --template=gcc --enable=all -j4 --suppressions-list=cppcheck-suppressions.txt Lib/ App/ Test/
     - stage: prebuild
       addons:
         apt:
