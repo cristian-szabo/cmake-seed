@@ -57,9 +57,9 @@ jobs:
           mkdir Build
           cmake -G "Unix Makefiles" -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DBUILD_APP=OFF -DBUILD_TEST=OFF -B./Build -H./
           cmake --build ./Build --config Release
-          export PROJECT_FILES=$(find Lib -type f -name "*.cpp")
+          export PROJECT_FILES=$(find Lib -type f -iregex '.*\.\(h\|hpp\|c\|cpp\)$')
           echo $PROJECT_FILES
-          clang-tidy -p ./Build -checks=* $PROJECT_FILES
+          clang-tidy -p ./Build -checks=hicpp-* $PROJECT_FILES
     - stage: prebuild
       script: 
         - |
