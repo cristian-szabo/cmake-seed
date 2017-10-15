@@ -25,11 +25,9 @@ jobs:
         - ARCH="32"
       addons:
         apt:
-          sources:
-              - ubuntu-toolchain-r-test
           packages:
-              - g++-5
-              - g++-5-multilib
+              - g++
+              - g++-multilib
       cache:
         ccache: true
         directories:
@@ -72,11 +70,8 @@ jobs:
         - ARCH="64"
       addons:
         apt:
-          sources:
-              - ubuntu-toolchain-r-test
           packages:
-              - g++-5
-              - g++-5-multilib
+              - g++
     - <<: *ExternBuild
       env:
         - OS="Windows"
@@ -85,9 +80,10 @@ jobs:
         apt:
           packages:
             - g++-mingw-w64
+            - g++-multilib
     - <<: *ExternBuild
       env:
-        - OS="windows"
+        - OS="Windows"
         - ARCH="64"
       addons:
         apt:
