@@ -42,24 +42,22 @@ jobs:
           fi
       before_script:
        - |
-          export PATH=$HOME/.local/bin:$PATH
-          export PATH=$TRAVIS_BUILD_DIR/Workspace/CMake/bin:$PATH
+          export PATH=$HOME/.local/bin:$PATH;
+          export PATH=$TRAVIS_BUILD_DIR/Workspace/CMake/bin:$PATH;
           
           if [ $ARCH = "64" ]; then
-            export CXX_FLAGS="-m64"
+            export CXX_FLAGS="-m64";
           elif [ $ARCH = "32" ]; then
-            export CXX_FLAGS="-m32"
+            export CXX_FLAGS="-m32";
           else
-            echo "Arch not supported!"
+            echo "Arch not supported!";
             exit
           fi
           
           if [ $OS = "Linux" ]; then
-            export CXX="g++"
-            export CC="gcc"
+            export CXX="g++" CC="gcc";
           elfi [ $OS = "Windows" ]; then
-            export CXX="x86_64-w64-mingw32-g++"
-            export CC="x86_64-w64-mingw32-gcc"
+            export CXX="x86_64-w64-mingw32-g++" CC="x86_64-w64-mingw32-gcc";
           fi
       script: 
         - |
