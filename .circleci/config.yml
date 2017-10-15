@@ -14,23 +14,22 @@ DockerLinux: &ExecutorLinux
     - image: cristianszabo/gnu-linux:7.1
 
 BuildExternScript: &BuildExternScript
-  steps:
-    - checkout
-    - restore_cache:
-        key: v1-build-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}
-    - run:
-        name: Build Dependencies
-        command: |
-          cmake -G "Unix Makefiles" -DCMAKE_CXX_FLAGS="-m$ARCH" -B./Build -H./
-          cmake --build Build --config $CONFIGURATION
-    - save_cache:
-        key: v1-build-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}
-        paths:
-          - Build  
-    - persist_to_workspace:
-          root: Build/Install
-          paths:
-            - Extern
+  - checkout
+  - restore_cache:
+      key: v1-build-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}
+  - run:
+      name: Build Dependencies
+      command: |
+        cmake -G "Unix Makefiles" -DCMAKE_CXX_FLAGS="-m$ARCH" -B./Build -H./
+        cmake --build Build --config $CONFIGURATION
+  - save_cache:
+      key: v1-build-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}
+      paths:
+        - Build  
+  - persist_to_workspace:
+      root: Build/Install
+      paths:
+        - Extern
     
 version: 2
 jobs:
