@@ -46,7 +46,8 @@ build-extern: &build-extern-base
           root: Build/Install
           paths:
             - echo-output
-    
+           
+version: 2    
 jobs:
   cppcheck:
     <<: *executor-cppcheck
@@ -80,7 +81,8 @@ jobs:
       OS: Linux
       ARCH: 32
   build-extern-linux-64:
-    <<: *build-extern-linux
+    <<: *executor-linux
+    <<: *build-extern-base
     environment:
       OS: Linux
       ARCH: 64
@@ -133,33 +135,33 @@ workflows:
     jobs:
       - cppcheck
       - clang-tidy
-      - build-extern-linux-64
+      - build-extern-linux-64:
         requires:
           - cppcheck
           - clang-tidy
-      - build-project-coverage
+      - build-project-coverage:
         requires:
           - build-extern-linux-64
-      - generate-coverage
+      - generate-coverage:
         requires:
           - build-project-coverage
-      - deploy-github
+      - deploy-github:
         requires:
           - generate-coverage
   BuildLinux:
     jobs:
       - build-extern-linux-32
       - build-extern-linux-64
-      - build-project-linux-32
+      - build-project-linux-32:
         requires:
           - build-extern-linux-32
-      - build-project-linux-64
+      - build-project-linux-64:
         requires:
           - build-extern-linux-64
-      - test-project-linux
+      - test-project-linux:
         requires:
           - build-extern-linux-32
           - build-extern-linux-64
-      - deploy-github
+      - deploy-github:
         requires:
           - test-project-linux
