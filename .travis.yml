@@ -52,11 +52,18 @@ jobs:
             export CXX_FLAGS="-m32";
           fi
           
+          echo $CXX_FLAGS;
+          
           if [ $OS = "Linux" ]; then
             export CXX="g++" CC="gcc";
           elif [ $OS = "Windows" ]; then
             export CXX="x86_64-w64-mingw32-g++" CC="x86_64-w64-mingw32-gcc";
           fi
+          
+          echo $CC;
+          echo $CXX;
+          
+          apt-cache search mingw32 -y
       script: 
         - |
           cmake -G "Unix Makefiles" -DCMAKE_CXX_FLAGS=$CXX_FLAGS -B./Build -H./Extern
