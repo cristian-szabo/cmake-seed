@@ -21,7 +21,7 @@ jobs:
     - &ExternBuild
       stage: prebuild
       env:
-        - OS="linux"
+        - OS="Linux"
         - ARCH="32"
       addons:
         apt:
@@ -49,18 +49,12 @@ jobs:
             export CXX_FLAGS="-m64";
           elif [ $ARCH = "32" ]; then
             export CXX_FLAGS="-m32";
-          else
-            echo "Arch not supported!";
-            exit 1;
           fi
           
           if [ $OS = "Linux" ]; then
             export CXX="g++" CC="gcc";
           elif [ $OS = "Windows" ]; then
             export CXX="x86_64-w64-mingw32-g++" CC="x86_64-w64-mingw32-gcc";
-          else
-            echo "OS not supported!";
-            exit 1;
           fi
       script: 
         - |
@@ -84,7 +78,7 @@ jobs:
       addons:
         apt:
           packages:
-            - gcc-mingw-w64
+            - g++-mingw-w64
     - <<: *ExternBuild
       env:
         - OS="windows"
@@ -92,4 +86,4 @@ jobs:
       addons:
         apt:
           packages:
-            - gcc-mingw-w64
+            - g++-mingw-w64
