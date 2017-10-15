@@ -53,7 +53,7 @@ jobs:
           fi
           
           if [ $OS = "Linux" ]; then
-            export CXX="g++-5" CC="gcc-5";
+            export CXX="g++" CC="gcc";
           elif [ $OS = "Windows" ]; then
             export CXX="x86_64-w64-mingw32-g++" CC="x86_64-w64-mingw32-gcc";
           fi
