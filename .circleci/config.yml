@@ -3,11 +3,16 @@ defaults: &defaults
   docker:
     - image: buildpack-deps:jessie
 
+mock: &demo
+  environment:
+    TEST: 1
+    
 version: 2
 jobs:
   flow:
     <<: *defaults
-    steps:
+    <<: *demo
+    steps:      
       - run: mkdir -p workspace
       - run: echo "Hello, world!" > workspace/echo-output
 
