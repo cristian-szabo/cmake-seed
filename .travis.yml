@@ -50,7 +50,8 @@ jobs:
           elif [ $ARCH = "32" ]; then
             export CXX_FLAGS="-m32";
           else
-            exit "Arch not supported!";
+            echo "Arch not supported!";
+            exit 1;
           fi
           
           if [ $OS = "Linux" ]; then
@@ -58,7 +59,8 @@ jobs:
           elif [ $OS = "Windows" ]; then
             export CXX="x86_64-w64-mingw32-g++" CC="x86_64-w64-mingw32-gcc";
           else
-            exit "OS not supported!";
+            echo "OS not supported!";
+            exit 1;
           fi
       script: 
         - |
