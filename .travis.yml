@@ -17,38 +17,6 @@ env:
 
 jobs:
   include:
-    # cppcheck
-    - stage: prebuild
-      addons:
-        apt:
-          packages:
-              - cppcheck
-      script: 
-        - |
-          cppcheck --enable=information --template=gcc --enable=all --suppressions-list=cppcheck-suppressions.txt Lib/ App/ Test/
-    # clang-tidy
-    - stage: prebuild
-      addons:
-        apt:
-          packages:
-              - clang-tidy-3.8
-      cache:
-        ccache: true
-        directories:
-          - $TRAVIS_BUILD_DIR/Workspace/CMake
-          - $TRAVIS_BUILD_DIR/Build
-      install:
-        - |
-          if [ ! -d "$TRAVIS_BUILD_DIR/Workspace/CMake/bin" ]; then
-            travis_retry wget --no-check-certificate --quiet -O - $CMAKE_URL | tar --strip-components=1 -xz -C $TRAVIS_BUILD_DIR/Workspace/CMake
-          fi
-          export PATH=$TRAVIS_BUILD_DIR/Workspace/CMake/bin:$PATH
-      script: 
-        - |
-          cmake -G "Unix Makefiles" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_APP=OFF -DBUILD_TEST=OFF -B./Build -H./
-          cmake --build ./Build --config $CONFIGURATION
-          export PROJECT_FILES=$(find Lib -type f -name "*.cpp" -o -name "*.hpp" -o -name "*.c" -o -name "*.h")
-          clang-tidy -p ./Build -checks=hicpp-*,modernize-*,cppcoreguidelines-*, $PROJECT_FILES
     # Extern project
     - &ExternBuild
       stage: prebuild
@@ -86,7 +54,7 @@ jobs:
       after_success:
         - |
           aws s3 sync Build/Install s3://$TRAVIS_REPO_SLUG/extern/$OS/$ARCH
-     - <<: *ExternBuild
+    - <<: *ExternBuild
       env:
         - OS="linux"
         - COMPILER="gcc"
