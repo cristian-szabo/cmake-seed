@@ -20,10 +20,13 @@ jobs:
     # Extern project
     - &ExternBuild
       stage: prebuild
+      env:
+        - OS="linux"
+        - ARCH="32"
       addons:
         apt:
           packages:
-              - $COMPILER
+              - g++
       cache:
         ccache: true
         directories:
@@ -57,20 +60,24 @@ jobs:
     - <<: *ExternBuild
       env:
         - OS="linux"
-        - COMPILER="gcc"
-        - ARCH="32"
-    - <<: *ExternBuild
-      env:
-        - OS="linux"
-        - COMPILER="gcc"
         - ARCH="64"
+      addons:
+        apt:
+          packages:
+            - g++
     - <<: *ExternBuild
       env:
         - OS="windows"
-        - COMPILER="gcc-mingw-w64"
         - ARCH="32"
+      addons:
+        apt:
+          packages:
+            - gcc-mingw-w64
     - <<: *ExternBuild
       env:
         - OS="windows"
-        - COMPILER="gcc-mingw-w64"
         - ARCH="64"
+      addons:
+        apt:
+          packages:
+            - gcc-mingw-w64
