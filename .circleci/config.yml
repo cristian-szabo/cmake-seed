@@ -84,8 +84,37 @@ jobs:
     <<: *build-extern-base
     environment:
       OS: Linux
-      ARCH: 64     
-          
+      ARCH: 64
+  build-project-linux-32:
+    <<: *executor-linux
+    steps:
+      - run:
+        command: |
+          echo "test"        
+  build-project-linux-32:
+    <<: *executor-linux
+    steps:
+      - run:
+        command: |
+          echo "test" 
+  build-coverage:
+    <<: *executor-linux
+    steps:
+      - run:
+        command: |
+          echo "test"
+  test-linux:
+    <<: *executor-linux
+    steps:
+      - run:
+        command: |
+          echo "test"        
+  deploy-github:
+    <<: *executor-linux
+    steps:
+      - run:
+        command: |
+          echo "test"            
 workflows:
   version: 2
   pre-build:
@@ -102,16 +131,16 @@ workflows:
 #      - extern-windows-64
   build:
     jobs:
-#      - build-project-linux-32
+      - build-project-linux-32
 #      - build-project-linux-64
   post-build:
     jobs:
-#      - build-coverage
+      - build-coverage
   test:
     jobs:
-#      - test-linux
+      - test-linux
 #      - test-coverage
   deploy:
     jobs:
-#      - github
+      - deploy-github
 #      - github-coverage
