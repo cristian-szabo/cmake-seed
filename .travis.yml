@@ -47,8 +47,19 @@ jobs:
           
           if [ $ARCH = "64" ]; then
             export CXX_FLAGS="-m64"
-          elif
+          elif [ $ARCH = "32" ]; then
             export CXX_FLAGS="-m32"
+          else
+            echo "Arch not supported!"
+            exit
+          fi
+          
+          if [ $OS = "Linux" ]; then
+            export CXX="g++"
+            export CC="gcc"
+          elfi [ $OS = "Windows" ]; then
+            export CXX="x86_64-w64-mingw32-g++"
+            export CC="x86_64-w64-mingw32-gcc"
           fi
       script: 
         - |
@@ -59,7 +70,7 @@ jobs:
           aws s3 sync Build/Install s3://$TRAVIS_REPO_SLUG/extern/$OS/$ARCH
     - <<: *ExternBuild
       env:
-        - OS="linux"
+        - OS="Linux"
         - ARCH="64"
       addons:
         apt:
@@ -67,7 +78,7 @@ jobs:
             - g++
     - <<: *ExternBuild
       env:
-        - OS="windows"
+        - OS="Windows"
         - ARCH="32"
       addons:
         apt:
