@@ -1,36 +1,36 @@
 DockerCppCheck: &ExecutorCppCheck
   working_directory: /tmp
   docker:
-    - image: cristianszabo/CppCheck:1.72
+    - image: cristianszabo/cppcheck:1.81
 
 DockerCLangTidy: &ExecutorCLangTidy
   working_directory: /tmp
   docker:
-    - image: cristianszabo/CLangTidy:3.8
+    - image: cristianszabo/clang-tidy:3.8
 
 DockerLinux: &ExecutorLinux
   working_directory: /tmp
   docker:
     - image: cristianszabo/gnu-linux:7.1
 
-BuildExtern: &BuildExternBase
+BuildExternScript: &BuildExternScript
   steps:
     - checkout
     - restore_cache:
-        key: v1-build-extern-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}
+        key: v1-build-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}
     - run:
-        name: Build Project Dependencies
+        name: Build Dependencies
         command: |
-          cmake -G "Unix Makefiles" -B./Build -H./
-          cmake --build ./Build --config $CONFIGURATION
+          cmake -G "Unix Makefiles" -DCMAKE_CXX_FLAGS="-m$ARCH" -B./Build -H./
+          cmake --build Build --config $CONFIGURATION
     - save_cache:
-        key: v1-build-extern-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}
+        key: v1-build-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}
         paths:
           - Build  
     - persist_to_workspace:
           root: Build/Install
           paths:
-            - echo-output
+            - Extern
     
 version: 2
 jobs:
@@ -68,12 +68,15 @@ jobs:
     environment:
       OS: Linux
       ARCH: 32
+    steps:
+      <<: *BuildExternScript
   BuildExternLinux64:
     <<: *ExecutorLinux
-    <<: *BuildExternBase
     environment:
       OS: Linux
       ARCH: 64
+    steps:
+      <<: *BuildExternScript
   BuildProjectLinux32:
     <<: *ExecutorLinux
     steps:
