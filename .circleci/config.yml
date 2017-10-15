@@ -64,14 +64,13 @@ jobs:
             - Build-$OS-$ARCH
   BuildExternLinux32:
     <<: *ExecutorLinux
-    <<: *BuildExternBase
     environment:
       OS: Linux
       ARCH: 32
     steps:
       <<: *BuildExternScript
   BuildExternLinux64:
-    <<: *ExecutorLinux
+    <<: *ExecutorLinux   
     environment:
       OS: Linux
       ARCH: 64
