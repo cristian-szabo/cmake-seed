@@ -14,21 +14,10 @@ env:
   global:
     - CONFIGURATION=Release
     - CMAKE_URL="https://cmake.org/files/v3.9/cmake-3.9.4-Linux-x86_64.tar.gz"
-#env:
-#  global:
-#    - PATH=$HOME/.local/bin:$PATH
 
-#before_install:
-#  - pip install --user awscli
-#  - mkdir -p ~/artifacts
-#  - aws s3 sync s3://cmake-seed/$TRAVIS_BUILD_NUMBER ~/artifacts
-#
-#after_success:
-#  - aws s3 sync ~/artifacts s3://cmake-seed/$TRAVIS_BUILD_NUMBER
-  
 jobs:
   include:
-    # Define jobs for pre-build stage    
+    # cppcheck
     - stage: prebuild
       addons:
         apt:
@@ -36,7 +25,8 @@ jobs:
               - cppcheck
       script: 
         - |
-          cppcheck --enable=information --template=gcc --enable=all -j4 --suppressions-list=cppcheck-suppressions.txt Lib/ App/ Test/
+          cppcheck --enable=information --template=gcc --enable=all --suppressions-list=cppcheck-suppressions.txt Lib/ App/ Test/
+    # clang-tidy
     - stage: prebuild
       addons:
         apt:
@@ -46,6 +36,7 @@ jobs:
         ccache: true
         directories:
           - $TRAVIS_BUILD_DIR/Workspace/CMake
+          - $TRAVIS_BUILD_DIR/Build
       install:
         - |
           if [ ! -d "$TRAVIS_BUILD_DIR/Workspace/CMake/bin" ]; then
@@ -54,16 +45,17 @@ jobs:
           export PATH=$TRAVIS_BUILD_DIR/Workspace/CMake/bin:$PATH
       script: 
         - |
-          mkdir Build
-          cmake -G "Unix Makefiles" -DCMAKE_EXPORT_COMPILE_COMMANDS=TRUE -DBUILD_APP=OFF -DBUILD_TEST=OFF -B./Build -H./
+          cmake -G "Unix Makefiles" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DBUILD_APP=OFF -DBUILD_TEST=OFF -B./Build -H./
           cmake --build ./Build --config $CONFIGURATION
           export PROJECT_FILES=$(find Lib -type f -name "*.cpp" -o -name "*.hpp" -o -name "*.c" -o -name "*.h")
-          echo $PROJECT_FILES
-          clang-tidy -p ./Build -checks=hicpp-* $PROJECT_FILES
-    - stage: prebuild
-      env:
-        global:
-          - PATH=$HOME/.local/bin:$PATH
+          clang-tidy -p ./Build -checks=hicpp-*,modernize-*,cppcoreguidelines-*, $PROJECT_FILES
+    # Extern project
+    - &ExternBuild
+      stage: prebuild
+      addons:
+        apt:
+          packages:
+              - $COMPILER
       cache:
         ccache: true
         directories:
@@ -72,20 +64,45 @@ jobs:
       before_install:
         - |
           pip install --user awscli
-          mkdir -p artifacts/extern
-          aws s3 sync s3://$TRAVIS_REPO_SLUG/extern artifacts/extern
       install:
         - |
           if [ ! -d "$TRAVIS_BUILD_DIR/Workspace/CMake/bin" ]; then
             travis_retry wget --no-check-certificate --quiet -O - $CMAKE_URL | tar --strip-components=1 -xz -C $TRAVIS_BUILD_DIR/Workspace/CMake
           fi
+      before_script:
+       - |
+          export PATH=$HOME/.local/bin:$PATH
           export PATH=$TRAVIS_BUILD_DIR/Workspace/CMake/bin:$PATH
+          
+          if [ $ARCH = "64" ]; then
+            export CXX_FLAGS="-m64"
+          elif
+            export CXX_FLAGS="-m32"
+          fi
       script: 
         - |
-          mkdir Build
-          cmake -G "Unix Makefiles" -B./Build -H./Extern
+          cmake -G "Unix Makefiles" -DCMAKE_CXX_FLAGS=$CXX_FLAGS -B./Build -H./Extern
           cmake --build ./Build --target all --config $CONFIGURATION
       after_success:
         - |
-          mv -v Build/Install/* artifacts/extern/
-          aws s3 sync artifacts/extern s3://$TRAVIS_REPO_SLUG/extern
+          aws s3 sync Build/Install s3://$TRAVIS_REPO_SLUG/extern/$OS/$ARCH
+     - <<: *ExternBuild
+      env:
+        - OS="linux"
+        - COMPILER="gcc"
+        - ARCH="32"
+    - <<: *ExternBuild
+      env:
+        - OS="linux"
+        - COMPILER="gcc"
+        - ARCH="64"
+    - <<: *ExternBuild
+      env:
+        - OS="windows"
+        - COMPILER="gcc-mingw-w64"
+        - ARCH="32"
+    - <<: *ExternBuild
+      env:
+        - OS="windows"
+        - COMPILER="gcc-mingw-w64"
+        - ARCH="64"
