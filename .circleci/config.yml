@@ -1,48 +1,83 @@
-defaults: &defaults
+DockerLinux: &ExecutorLinux
   working_directory: /tmp
   docker:
-    - image: buildpack-deps:jessie
+    - image: cristianszabo/gnu-linux:7.1
 
-mock: &demo
-  environment:
-    TEST: 1
+BuildExtern: &BuildExternBase
+  steps:
+    - checkout
+    - restore_cache:
+        key: v1-build-extern-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}
+    - run:
+        name: Build Project Dependencies
+        command: |
+          cmake -G "Unix Makefiles" -B./Build -H./
+          cmake --build ./Build --config $CONFIGURATION
+    - save_cache:
+        key: v1-build-extern-{{ .Branch }}-{{ .Environment.CIRCLE_JOB }}
+        paths:
+          - Build  
+    - persist_to_workspace:
+          root: Build/Install
+          paths:
+            - echo-output
     
 version: 2
 jobs:
-  flow:
-    <<: *defaults
-    <<: *demo
-    steps:      
-      - run: mkdir -p workspace
-      - run: echo "Hello, world!" > workspace/echo-output
-
-      - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory
-          root: workspace
-          # Must be relative path from root
-          paths:
-            - echo-output
-
-  downstream:
-    <<: *defaults
+  BuildExternLinux32:
+    <<: *ExecutorLinux
+    <<: *BuildExternBase
+    environment:
+      OS: Linux
+      ARCH: 32
+  BuildExternLinux64:
+    <<: *ExecutorLinux
+    <<: *BuildExternBase
+    environment:
+      OS: Linux
+      ARCH: 64
+  BuildProjectLinux32:
+    <<: *ExecutorLinux
     steps:
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: /tmp/workspace
-
-      - run: |
-          if [[ `cat /tmp/workspace/echo-output` == "Hello, world!" ]]; then
-            echo "It worked!";
-          else
-            echo "Nope!"; exit 1
-          fi
+      - run:
+        command: |
+          echo "test"          
+  BuildProjectLinux64:
+    <<: *ExecutorLinux
+    steps:
+      - run:
+        command: |
+          echo "test"          
+  TestProjectLinux:
+    <<: *ExecutorLinux
+    steps:
+      - run:
+        command: |
+          echo "test"   
+  DeployGithub:
+    <<: *ExecutorLinux
+    steps:
+      - run:
+        command: |
+          echo "test"
 
 workflows:
   version: 2
 
-  btd:
+  BuildLinux:
     jobs:
-      - flow
-      - downstream:
+      - BuildExternLinux32
+      - BuildExternLinux64
+      - BuildProjectLinux32:
           requires:
-            - flow
+            - BuildExternLinux32
+      - BuildProjectLinux64:
+          requires:
+            - BuildExternLinux64
+      - TestProjectLinux:
+          requires:
+            - BuildProjectLinux32
+            - BuildProjectLinux64
+      - DeployGithub:
+          requires:
+            - TestProjectLinux
