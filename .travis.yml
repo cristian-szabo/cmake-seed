@@ -25,8 +25,11 @@ jobs:
         - ARCH="32"
       addons:
         apt:
+          sources:
+              - ubuntu-toolchain-r-test
           packages:
-              - g++
+              - g++-5
+              - g++-5-multilib
       cache:
         ccache: true
         directories:
@@ -52,7 +55,7 @@ jobs:
           fi
           
           if [ $OS = "Linux" ]; then
-            export CXX="g++" CC="gcc";
+            export CXX="g++-5" CC="gcc-5";
           elif [ $OS = "Windows" ]; then
             export CXX="x86_64-w64-mingw32-g++" CC="x86_64-w64-mingw32-gcc";
           fi
@@ -69,8 +72,11 @@ jobs:
         - ARCH="64"
       addons:
         apt:
+          sources:
+              - ubuntu-toolchain-r-test
           packages:
-            - g++
+              - g++-5
+              - g++-5-multilib
     - <<: *ExternBuild
       env:
         - OS="Windows"
