@@ -80,8 +80,7 @@ jobs:
       OS: Linux
       ARCH: 32
   build-extern-linux-64:
-    <<: *executor-linux
-    <<: *build-extern-base
+    <<: *build-extern-linux
     environment:
       OS: Linux
       ARCH: 64
@@ -91,56 +90,76 @@ jobs:
       - run:
         command: |
           echo "test"        
-  build-project-linux-32:
+  build-project-linux-64:
     <<: *executor-linux
     steps:
       - run:
         command: |
           echo "test" 
-  build-coverage:
+  test-project-linux:
+    <<: *executor-linux
+    steps:
+      - run:
+        command: |
+          echo "test" 
+  build-project-coverage:
     <<: *executor-linux
     steps:
       - run:
         command: |
           echo "test"
-  test-linux:
+  generate-coverage:
     <<: *executor-linux
     steps:
       - run:
         command: |
           echo "test"        
+  publish-coverage:
+    <<: *executor-linux
+    steps:
+      - run:
+        command: |
+          echo "test"   
   deploy-github:
     <<: *executor-linux
     steps:
       - run:
         command: |
-          echo "test"            
+          echo "test"       
+          
 workflows:
   version: 2
-  pre-build:
+  BuildCheck:
     jobs:
       - cppcheck
       - clang-tidy
+      - build-extern-linux-64
+        requires:
+          - cppcheck
+          - clang-tidy
+      - build-project-coverage
+        requires:
+          - build-extern-linux-64
+      - generate-coverage
+        requires:
+          - build-project-coverage
+      - deploy-github
+        requires:
+          - generate-coverage
+  BuildLinux:
+    jobs:
       - build-extern-linux-32
       - build-extern-linux-64
-#      - extern-arm-linux-32
-#      - extern-arm-linux-64
-#      - extern-arm-android-32
-#      - extern-arm-android-64
-#      - extern-windows-32
-#      - extern-windows-64
-  build:
-    jobs:
       - build-project-linux-32
-#      - build-project-linux-64
-  post-build:
-    jobs:
-      - build-coverage
-  test:
-    jobs:
-      - test-linux
-#      - test-coverage
-  deploy:
-    jobs:
+        requires:
+          - build-extern-linux-32
+      - build-project-linux-64
+        requires:
+          - build-extern-linux-64
+      - test-project-linux
+        requires:
+          - build-extern-linux-32
+          - build-extern-linux-64
       - deploy-github
-#      - github-coverage
+        requires:
+          - test-project-linux
