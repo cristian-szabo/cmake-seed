@@ -1,5 +1,5 @@
 DockerCppCheck: &ExecutorCppCheck
-  working_directory: /tmp
+  working_directory: /root
   docker:
     - image: cristianszabo/cppcheck:1.81
 
