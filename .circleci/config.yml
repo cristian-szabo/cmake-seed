@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Static Analysis C++ Code
           command: |
-            CppCheck --enable=information --template=gcc --enable=all Lib/ App/ Test/
+            cppcheck --enable=information --template=gcc --enable=all Lib/ App/ Test/
   CLangTidy:
     <<: *ExecutorCLangTidy
     steps:
@@ -57,7 +57,7 @@ jobs:
           name: Static Analysis C++ Code
           command: |
             export PROJECT_FILES=$(find Lib -type f -name "*.cpp" -o -name "*.hpp" -o -name "*.c" -o -name "*.h")
-            CLangTidy -p Build-$OS-$ARCH -checks=hicpp-*,modernize-*,cppcoreguidelines-*, $PROJECT_FILES
+            clang-tidy -p Build-$OS-$ARCH -checks=hicpp-*,modernize-*,cppcoreguidelines-*, $PROJECT_FILES
       - save_cache:
           key: v1-cland-tidy-{{ .Branch }}
           paths:
